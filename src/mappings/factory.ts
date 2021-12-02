@@ -1,8 +1,8 @@
 /* eslint-disable prefer-const */
 import { log } from '@graphprotocol/graph-ts'
 import { PairCreated } from '../types/Factory/Factory'
-import { Bundle, Pair, Token, UniswapFactory } from '../types/schema'
-import { Pair as PairTemplate } from '../types/templates'
+import { Bundle, ConveyorV2Pair, Token, ConveyorV2Factory } from '../types/schema'
+import { ConveyorV2Pair as PairTemplate } from '../types/templates'
 import {
   FACTORY_ADDRESS,
   fetchTokenDecimals,
@@ -15,9 +15,9 @@ import {
 
 export function handleNewPair(event: PairCreated): void {
   // load factory (create if first exchange)
-  let factory = UniswapFactory.load(FACTORY_ADDRESS)
+  let factory = ConveyorV2Factory.load(FACTORY_ADDRESS)
   if (factory === null) {
-    factory = new UniswapFactory(FACTORY_ADDRESS)
+    factory = new ConveyorV2Factory(FACTORY_ADDRESS)
     factory.pairCount = 0
     factory.totalVolumeETH = ZERO_BD
     factory.totalLiquidityETH = ZERO_BD
@@ -84,7 +84,7 @@ export function handleNewPair(event: PairCreated): void {
     token1.txCount = ZERO_BI
   }
 
-  let pair = new Pair(event.params.pair.toHexString()) as Pair
+  let pair = new ConveyorV2Pair(event.params.pair.toHexString()) as ConveyorV2Pair
   pair.token0 = token0.id
   pair.token1 = token1.id
   pair.liquidityProviderCount = ZERO_BI

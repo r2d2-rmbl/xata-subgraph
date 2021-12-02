@@ -1,11 +1,11 @@
 /* eslint-disable prefer-const */
 import { BigDecimal, BigInt, EthereumEvent } from '@graphprotocol/graph-ts'
-import { Bundle, Pair, PairDayData, Token, TokenDayData, UniswapDayData, UniswapFactory } from '../types/schema'
+import { Bundle, ConveyorV2Pair, PairDayData, Token, TokenDayData, UniswapDayData, ConveyorV2Factory } from '../types/schema'
 import { PairHourData } from './../types/schema'
 import { FACTORY_ADDRESS, ONE_BI, ZERO_BD, ZERO_BI } from './helpers'
 
-export function updateUniswapDayData(event: EthereumEvent): UniswapDayData {
-  let uniswap = UniswapFactory.load(FACTORY_ADDRESS)
+export function updateXataDayData(event: EthereumEvent): UniswapDayData {
+  let xata = ConveyorV2Factory.load(FACTORY_ADDRESS)
   let timestamp = event.block.timestamp.toI32()
   let dayID = timestamp / 86400
   let dayStartTimestamp = dayID * 86400
@@ -20,9 +20,9 @@ export function updateUniswapDayData(event: EthereumEvent): UniswapDayData {
     uniswapDayData.dailyVolumeUntracked = ZERO_BD
   }
 
-  uniswapDayData.totalLiquidityUSD = uniswap.totalLiquidityUSD
-  uniswapDayData.totalLiquidityETH = uniswap.totalLiquidityETH
-  uniswapDayData.txCount = uniswap.txCount
+  uniswapDayData.totalLiquidityUSD = xata.totalLiquidityUSD
+  uniswapDayData.totalLiquidityETH = xata.totalLiquidityETH
+  uniswapDayData.txCount = xata.txCount
   uniswapDayData.save()
 
   return uniswapDayData as UniswapDayData
@@ -36,7 +36,7 @@ export function updatePairDayData(event: EthereumEvent): PairDayData {
     .toHexString()
     .concat('-')
     .concat(BigInt.fromI32(dayID).toString())
-  let pair = Pair.load(event.address.toHexString())
+  let pair = ConveyorV2Pair.load(event.address.toHexString())
   let pairDayData = PairDayData.load(dayPairID)
   if (pairDayData === null) {
     pairDayData = new PairDayData(dayPairID)
@@ -68,7 +68,7 @@ export function updatePairHourData(event: EthereumEvent): PairHourData {
     .toHexString()
     .concat('-')
     .concat(BigInt.fromI32(hourIndex).toString())
-  let pair = Pair.load(event.address.toHexString())
+  let pair = ConveyorV2Pair.load(event.address.toHexString())
   let pairHourData = PairHourData.load(hourPairID)
   if (pairHourData === null) {
     pairHourData = new PairHourData(hourPairID)

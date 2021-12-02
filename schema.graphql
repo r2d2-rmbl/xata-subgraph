@@ -1,4 +1,4 @@
-type UniswapFactory @entity {
+type ConveyorV2Factory @entity {
   # factory address
   id: ID!
 
@@ -50,11 +50,11 @@ type Token @entity {
   tokenDayData: [TokenDayData!]! @derivedFrom(field: "token")
   pairDayDataBase: [PairDayData!]! @derivedFrom(field: "token0")
   pairDayDataQuote: [PairDayData!]! @derivedFrom(field: "token1")
-  pairBase: [Pair!]! @derivedFrom(field: "token0")
-  pairQuote: [Pair!]! @derivedFrom(field: "token1")
+  pairBase: [ConveyorV2Pair!]! @derivedFrom(field: "token0")
+  pairQuote: [ConveyorV2Pair!]! @derivedFrom(field: "token1")
 }
 
-type Pair @entity {
+type ConveyorV2Pair @entity {
   # pair address
   id: ID!
 
@@ -106,7 +106,7 @@ type User @entity {
 type LiquidityPosition @entity {
   id: ID!
   user: User!
-  pair: Pair!
+  pair: ConveyorV2Pair!
   liquidityTokenBalance: BigDecimal!
 }
 
@@ -117,7 +117,7 @@ type LiquidityPositionSnapshot @entity {
   timestamp: Int! # saved for fast historical lookups
   block: Int! # saved for fast historical lookups
   user: User! # reference to user
-  pair: Pair! # reference to pair
+  pair: ConveyorV2Pair! # reference to pair
   token0PriceUSD: BigDecimal! # snapshot of token0 price
   token1PriceUSD: BigDecimal! # snapshot of token1 price
   reserve0: BigDecimal! # snapshot of pair token0 reserves
@@ -143,7 +143,7 @@ type Mint @entity {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
-  pair: Pair!
+  pair: ConveyorV2Pair!
 
   # populated from the primary Transfer event
   to: Bytes!
@@ -167,7 +167,7 @@ type Burn @entity {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
-  pair: Pair!
+  pair: ConveyorV2Pair!
 
   # populated from the primary Transfer event
   liquidity: BigDecimal!
@@ -194,7 +194,7 @@ type Swap @entity {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
-  pair: Pair!
+  pair: ConveyorV2Pair!
 
   # populated from the Swap event
   sender: Bytes!
@@ -236,7 +236,7 @@ type UniswapDayData @entity {
 type PairHourData @entity {
   id: ID!
   hourStartUnix: Int! # unix timestamp for start of hour
-  pair: Pair!
+  pair: ConveyorV2Pair!
 
   # reserves
   reserve0: BigDecimal!

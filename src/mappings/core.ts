@@ -1,17 +1,17 @@
 /* eslint-disable prefer-const */
 import { BigInt, BigDecimal, store, Address } from '@graphprotocol/graph-ts'
 import {
-  Pair,
+  ConveyorV2Pair,
   Token,
-  UniswapFactory,
+  ConveyorV2Factory,
   Transaction,
   Mint as MintEvent,
   Burn as BurnEvent,
   Swap as SwapEvent,
   Bundle
 } from '../types/schema'
-import { Pair as PairContract, Mint, Burn, Swap, Transfer, Sync } from '../types/templates/Pair/Pair'
-import { updatePairDayData, updateTokenDayData, updateUniswapDayData, updatePairHourData } from './dayUpdates'
+import { ConveyorV2Pair as PairContract, Mint, Burn, Swap, Transfer, Sync } from '../types/templates/ConveyorV2Pair/ConveyorV2Pair'
+import { updatePairDayData, updateTokenDayData, updateXataDayData, updatePairHourData } from './dayUpdates'
 import { getEthPriceInUSD, findEthPerToken, getTrackedVolumeUSD, getTrackedLiquidityUSD } from './pricing'
 import {
   convertTokenToDecimal,
@@ -35,7 +35,7 @@ export function handleTransfer(event: Transfer): void {
     return
   }
 
-  let factory = UniswapFactory.load(FACTORY_ADDRESS)
+  let factory = ConveyorV2Factory.load(FACTORY_ADDRESS)
   let transactionHash = event.transaction.hash.toHexString()
 
   // user stats
@@ -45,7 +45,7 @@ export function handleTransfer(event: Transfer): void {
   createUser(to)
 
   // get pair and load contract
-  let pair = Pair.load(event.address.toHexString())
+  let pair = ConveyorV2Pair.load(event.address.toHexString())
   let pairContract = PairContract.bind(event.address)
 
   // liquidity token amount being transfered
@@ -211,13 +211,13 @@ export function handleTransfer(event: Transfer): void {
 }
 
 export function handleSync(event: Sync): void {
-  let pair = Pair.load(event.address.toHex())
+  let pair = ConveyorV2Pair.load(event.address.toHex())
   let token0 = Token.load(pair.token0)
   let token1 = Token.load(pair.token1)
-  let uniswap = UniswapFactory.load(FACTORY_ADDRESS)
+  let xata = ConveyorV2Factory.load(FACTORY_ADDRESS)
 
   // reset factory liquidity by subtracting onluy tarcked liquidity
-  uniswap.totalLiquidityETH = uniswap.totalLiquidityETH.minus(pair.trackedReserveETH as BigDecimal)
+  xata.totalLiquidityETH = xata.totalLiquidityETH.minus(pair.trackedReserveETH as BigDecimal)
 
   // reset token total liquidity amounts
   token0.totalLiquidity = token0.totalLiquidity.minus(pair.reserve0)
@@ -261,8 +261,8 @@ export function handleSync(event: Sync): void {
   pair.reserveUSD = pair.reserveETH.times(bundle.ethPrice)
 
   // use tracked amounts globally
-  uniswap.totalLiquidityETH = uniswap.totalLiquidityETH.plus(trackedLiquidityETH)
-  uniswap.totalLiquidityUSD = uniswap.totalLiquidityETH.times(bundle.ethPrice)
+  xata.totalLiquidityETH = xata.totalLiquidityETH.plus(trackedLiquidityETH)
+  xata.totalLiquidityUSD = xata.totalLiquidityETH.times(bundle.ethPrice)
 
   // now correctly set liquidity amounts for each token
   token0.totalLiquidity = token0.totalLiquidity.plus(pair.reserve0)
@@ -270,7 +270,7 @@ export function handleSync(event: Sync): void {
 
   // save entities
   pair.save()
-  uniswap.save()
+  xata.save()
   token0.save()
   token1.save()
 }
@@ -280,8 +280,8 @@ export function handleMint(event: Mint): void {
   let mints = transaction.mints
   let mint = MintEvent.load(mints[mints.length - 1])
 
-  let pair = Pair.load(event.address.toHex())
-  let uniswap = UniswapFactory.load(FACTORY_ADDRESS)
+  let pair = ConveyorV2Pair.load(event.address.toHex())
+  let xata = ConveyorV2Factory.load(FACTORY_ADDRESS)
 
   let token0 = Token.load(pair.token0)
   let token1 = Token.load(pair.token1)
@@ -303,13 +303,13 @@ export function handleMint(event: Mint): void {
 
   // update txn counts
   pair.txCount = pair.txCount.plus(ONE_BI)
-  uniswap.txCount = uniswap.txCount.plus(ONE_BI)
+  xata.txCount = xata.txCount.plus(ONE_BI)
 
   // save entities
   token0.save()
   token1.save()
   pair.save()
-  uniswap.save()
+  xata.save()
 
   mint.sender = event.params.sender
   mint.amount0 = token0Amount as BigDecimal
@@ -325,7 +325,7 @@ export function handleMint(event: Mint): void {
   // update day entities
   updatePairDayData(event)
   updatePairHourData(event)
-  updateUniswapDayData(event)
+  updateXataDayData(event)
   updateTokenDayData(token0 as Token, event)
   updateTokenDayData(token1 as Token, event)
 }
@@ -341,8 +341,8 @@ export function handleBurn(event: Burn): void {
   let burns = transaction.burns
   let burn = BurnEvent.load(burns[burns.length - 1])
 
-  let pair = Pair.load(event.address.toHex())
-  let uniswap = UniswapFactory.load(FACTORY_ADDRESS)
+  let pair = ConveyorV2Pair.load(event.address.toHex())
+  let xata = ConveyorV2Factory.load(FACTORY_ADDRESS)
 
   //update token info
   let token0 = Token.load(pair.token0)
@@ -362,14 +362,14 @@ export function handleBurn(event: Burn): void {
     .times(bundle.ethPrice)
 
   // update txn counts
-  uniswap.txCount = uniswap.txCount.plus(ONE_BI)
+  xata.txCount = xata.txCount.plus(ONE_BI)
   pair.txCount = pair.txCount.plus(ONE_BI)
 
   // update global counter and save
   token0.save()
   token1.save()
   pair.save()
-  uniswap.save()
+  xata.save()
 
   // update burn
   // burn.sender = event.params.sender
@@ -387,13 +387,13 @@ export function handleBurn(event: Burn): void {
   // update day entities
   updatePairDayData(event)
   updatePairHourData(event)
-  updateUniswapDayData(event)
+  updateXataDayData(event)
   updateTokenDayData(token0 as Token, event)
   updateTokenDayData(token1 as Token, event)
 }
 
 export function handleSwap(event: Swap): void {
-  let pair = Pair.load(event.address.toHexString())
+  let pair = ConveyorV2Pair.load(event.address.toHexString())
   let token0 = Token.load(pair.token0)
   let token1 = Token.load(pair.token1)
   let amount0In = convertTokenToDecimal(event.params.amount0In, token0.decimals)
@@ -416,7 +416,7 @@ export function handleSwap(event: Swap): void {
   let derivedAmountUSD = derivedAmountETH.times(bundle.ethPrice)
 
   // only accounts for volume through white listed tokens
-  let trackedAmountUSD = getTrackedVolumeUSD(amount0Total, token0 as Token, amount1Total, token1 as Token, pair as Pair)
+  let trackedAmountUSD = getTrackedVolumeUSD(amount0Total, token0 as Token, amount1Total, token1 as Token, pair as ConveyorV2Pair)
 
   let trackedAmountETH: BigDecimal
   if (bundle.ethPrice.equals(ZERO_BD)) {
@@ -448,17 +448,17 @@ export function handleSwap(event: Swap): void {
   pair.save()
 
   // update global values, only used tracked amounts for volume
-  let uniswap = UniswapFactory.load(FACTORY_ADDRESS)
-  uniswap.totalVolumeUSD = uniswap.totalVolumeUSD.plus(trackedAmountUSD)
-  uniswap.totalVolumeETH = uniswap.totalVolumeETH.plus(trackedAmountETH)
-  uniswap.untrackedVolumeUSD = uniswap.untrackedVolumeUSD.plus(derivedAmountUSD)
-  uniswap.txCount = uniswap.txCount.plus(ONE_BI)
+  let xata = ConveyorV2Factory.load(FACTORY_ADDRESS)
+  xata.totalVolumeUSD = xata.totalVolumeUSD.plus(trackedAmountUSD)
+  xata.totalVolumeETH = xata.totalVolumeETH.plus(trackedAmountETH)
+  xata.untrackedVolumeUSD = xata.untrackedVolumeUSD.plus(derivedAmountUSD)
+  xata.txCount = xata.txCount.plus(ONE_BI)
 
   // save entities
   pair.save()
   token0.save()
   token1.save()
-  uniswap.save()
+  xata.save()
 
   let transaction = Transaction.load(event.transaction.hash.toHexString())
   if (transaction === null) {
@@ -505,7 +505,7 @@ export function handleSwap(event: Swap): void {
   // update day entities
   let pairDayData = updatePairDayData(event)
   let pairHourData = updatePairHourData(event)
-  let uniswapDayData = updateUniswapDayData(event)
+  let uniswapDayData = updateXataDayData(event)
   let token0DayData = updateTokenDayData(token0 as Token, event)
   let token1DayData = updateTokenDayData(token1 as Token, event)
 

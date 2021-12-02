@@ -1,14 +1,14 @@
 specVersion: 0.0.2
 description: Uniswap is a decentralized protocol for automated token exchange on Ethereum.
-repository: https://github.com/Uniswap/uniswap-v2-subgraph
+repository: https://github.com/r2d2-rmbl/xata-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: Factory
-    network: mainnet
+    network: bsc
     source:
-      address: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
+      address: '0x5f8017621825BC10D63d15C3e863f893946781F7'
       abi: Factory
       startBlock: 10000834
     mapping:
@@ -17,11 +17,11 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/mappings/factory.ts
       entities:
-        - Pair
+        - ConveyorV2Pair
         - Token
       abis:
         - name: Factory
-          file: ./abis/factory.json
+          file: ./abis/ConveyorV2Factory.json
         - name: ERC20
           file: ./abis/ERC20.json
         - name: ERC20SymbolBytes
@@ -33,23 +33,23 @@ dataSources:
           handler: handleNewPair
 templates:
   - kind: ethereum/contract
-    name: Pair
-    network: mainnet
+    name: ConveyorV2Pair
+    network: bsc
     source:
-      abi: Pair
+      abi: ConveyorV2Pair
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.3
       language: wasm/assemblyscript
       file: ./src/mappings/core.ts
       entities:
-        - Pair
+        - ConveyorV2Pair
         - Token
       abis:
-        - name: Pair
-          file: ./abis/pair.json
+        - name: ConveyorV2Pair
+          file: ./abis/ConveyorV2Pair.json
         - name: Factory
-          file: ./abis/factory.json
+          file: ./abis/ConveyorV2Factory.json
       eventHandlers:
         - event: Mint(indexed address,uint256,uint256)
           handler: handleMint

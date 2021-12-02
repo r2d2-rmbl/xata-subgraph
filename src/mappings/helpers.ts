@@ -3,8 +3,8 @@ import { log, BigInt, BigDecimal, Address, EthereumEvent } from '@graphprotocol/
 import { ERC20 } from '../types/Factory/ERC20'
 import { ERC20SymbolBytes } from '../types/Factory/ERC20SymbolBytes'
 import { ERC20NameBytes } from '../types/Factory/ERC20NameBytes'
-import { User, Bundle, Token, LiquidityPosition, LiquidityPositionSnapshot, Pair } from '../types/schema'
-import { Factory as FactoryContract } from '../types/templates/Pair/Factory'
+import { User, Bundle, Token, LiquidityPosition, LiquidityPositionSnapshot, ConveyorV2Pair } from '../types/schema'
+import { Factory as FactoryContract } from '../types/templates/ConveyorV2Pair/Factory'
 import { TokenDefinition } from './tokenDefinition'
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
@@ -147,7 +147,7 @@ export function createLiquidityPosition(exchange: Address, user: Address): Liqui
     .concat(user.toHexString())
   let liquidityTokenBalance = LiquidityPosition.load(id)
   if (liquidityTokenBalance === null) {
-    let pair = Pair.load(exchange.toHexString())
+    let pair = ConveyorV2Pair.load(exchange.toHexString())
     pair.liquidityProviderCount = pair.liquidityProviderCount.plus(ONE_BI)
     liquidityTokenBalance = new LiquidityPosition(id)
     liquidityTokenBalance.liquidityTokenBalance = ZERO_BD
@@ -172,7 +172,7 @@ export function createUser(address: Address): void {
 export function createLiquiditySnapshot(position: LiquidityPosition, event: EthereumEvent): void {
   let timestamp = event.block.timestamp.toI32()
   let bundle = Bundle.load('1')
-  let pair = Pair.load(position.pair)
+  let pair = ConveyorV2Pair.load(position.pair)
   let token0 = Token.load(pair.token0)
   let token1 = Token.load(pair.token1)
 
