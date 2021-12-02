@@ -1,31 +1,31 @@
 /* eslint-disable prefer-const */
 import { BigDecimal, BigInt, EthereumEvent } from '@graphprotocol/graph-ts'
-import { Bundle, ConveyorV2Pair, PairDayData, Token, TokenDayData, UniswapDayData, ConveyorV2Factory } from '../types/schema'
+import { Bundle, ConveyorV2Pair, PairDayData, Token, TokenDayData, XATADayData, ConveyorV2Factory } from '../types/schema'
 import { PairHourData } from './../types/schema'
 import { FACTORY_ADDRESS, ONE_BI, ZERO_BD, ZERO_BI } from './helpers'
 
-export function updateXataDayData(event: EthereumEvent): UniswapDayData {
+export function updateXataDayData(event: EthereumEvent): XATADayData {
   let xata = ConveyorV2Factory.load(FACTORY_ADDRESS)
   let timestamp = event.block.timestamp.toI32()
   let dayID = timestamp / 86400
   let dayStartTimestamp = dayID * 86400
-  let uniswapDayData = UniswapDayData.load(dayID.toString())
-  if (uniswapDayData === null) {
-    uniswapDayData = new UniswapDayData(dayID.toString())
-    uniswapDayData.date = dayStartTimestamp
-    uniswapDayData.dailyVolumeUSD = ZERO_BD
-    uniswapDayData.dailyVolumeETH = ZERO_BD
-    uniswapDayData.totalVolumeUSD = ZERO_BD
-    uniswapDayData.totalVolumeETH = ZERO_BD
-    uniswapDayData.dailyVolumeUntracked = ZERO_BD
+  let xataDayData = XATADayData.load(dayID.toString())
+  if (xataDayData === null) {
+    xataDayData = new XATADayData(dayID.toString())
+    xataDayData.date = dayStartTimestamp
+    xataDayData.dailyVolumeUSD = ZERO_BD
+    xataDayData.dailyVolumeETH = ZERO_BD
+    xataDayData.totalVolumeUSD = ZERO_BD
+    xataDayData.totalVolumeETH = ZERO_BD
+    xataDayData.dailyVolumeUntracked = ZERO_BD
   }
 
-  uniswapDayData.totalLiquidityUSD = xata.totalLiquidityUSD
-  uniswapDayData.totalLiquidityETH = xata.totalLiquidityETH
-  uniswapDayData.txCount = xata.txCount
-  uniswapDayData.save()
+  xataDayData.totalLiquidityUSD = xata.totalLiquidityUSD
+  xataDayData.totalLiquidityETH = xata.totalLiquidityETH
+  xataDayData.txCount = xata.txCount
+  xataDayData.save()
 
-  return uniswapDayData as UniswapDayData
+  return xataDayData as XATADayData
 }
 
 export function updatePairDayData(event: EthereumEvent): PairDayData {

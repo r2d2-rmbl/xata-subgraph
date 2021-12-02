@@ -1,6 +1,6 @@
 # XATA Subgraph
 
-[XATA](https://xata.fi/) is a decentralized protocol for automated token exchange.
+[XATA](https://xata.fi/) is a decentralized protocol for automated token exchange with built-in MEV protection and gasless transactions.
 
 This subgraph dynamically tracks any pair created by the xata factory. It tracks of the current state of Uniswap contracts, and contains derived stats for things like historical data and USD prices.
 
@@ -42,16 +42,24 @@ These contain specifc information about a transaction. Things like which pair tr
 
 ## Example Queries
 
-### Querying Aggregated Uniswap Data
+### Querying XATA Data
 
-This query fetches aggredated data from all xata pairs and tokens, to give a view into how much activity is happening within the whole protocol.
+This query fetches the first 10 swaps.
 
 ```graphql
 {
-  uniswapFactories(first: 1) {
-    pairCount
-    totalVolumeUSD
-    totalLiquidityUSD
+  swaps(first:10) {
+    id
+    pair {
+      token0 {
+        id
+        symbol
+        decimals
+      }
+    }
+    amount0In
+    amount0Out
+    to
   }
 }
 ```
