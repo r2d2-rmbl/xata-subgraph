@@ -35,6 +35,7 @@ Contains data on a specific pair.
 #### Transaction
 
 Every transaction on XATA is stored. Each transaction contains an array of mints, burns, and swaps that occured within it.
+This includes information about meta-trasnactions as well, including gas tokens paid.
 
 #### Mint, Burn, Swap
 
