@@ -63,3 +63,27 @@ This query fetches the first 10 swaps.
   }
 }
 ```
+
+## Network specific parameters
+1. subgraph.yaml:
+   * dataSources.network
+   * dataSources.source.address
+   * templates.network
+2. package.json:
+   * script for 'deploy' - the subgraph name will be different
+3. src/mappings/pricing.ts
+   * Ensure that the whitelisted token addresses match the target network (`WHITELIST`)
+   
+## Deployment
+1. Install dependencies 
+
+    `yarn install`
+
+2. Generate the type files for the scripts in `src` by running
+
+    `yarn codegen`
+
+3. Ensure that network parameters are correct by referring to previous section
+4. Deploy using
+
+    `yarn deploy`
