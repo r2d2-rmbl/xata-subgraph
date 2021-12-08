@@ -73,7 +73,11 @@ This query fetches the first 10 swaps.
    * script for 'deploy' - the subgraph name will be different
 3. src/mappings/pricing.ts
    * Ensure that the whitelisted token addresses match the target network (`WHITELIST`)
-   
+4. src/mappings/helpers.ts
+   * FACTORY_ADDRESS, if they are different across the networks
+5. src/mappings/routers.ts
+   * ROUTER_ADDRESS, if they are different across the networks
+
 ## Deployment
 1. Install dependencies 
 

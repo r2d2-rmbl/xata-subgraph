@@ -31,6 +31,26 @@ dataSources:
       eventHandlers:
         - event: PairCreated(indexed address,indexed address,address,uint256)
           handler: handleNewPair
+  - kind: ethereum/contract
+    name: ERC20Forwarder
+    network: bsc
+    source:
+      address: '0xe4C5Cf259351d7877039CBaE0e7f92EB2Ab017EB'
+      abi: Router
+      startBlock: 11590013
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      file: ./src/mappings/router.ts
+      entities:
+        - Transaction
+      abis:
+        - name: Router
+          file: ./abis/ConveyorV2Router01.json
+      eventHandlers:
+        - event: MetaStatus(address,bool,string)
+          handler: handleMetaStatus
 templates:
   - kind: ethereum/contract
     name: ConveyorV2Pair
@@ -61,3 +81,21 @@ templates:
           handler: handleTransfer
         - event: Sync(uint112,uint112)
           handler: handleSync
+  - kind: ethereum/contract
+    name: ERC20
+    network: bsc
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      file: ./src/mappings/router.ts
+      entities:
+        - Transaction
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleERC20Transfer
