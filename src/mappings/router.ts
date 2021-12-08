@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
-import { MetaStatus,  Router as RouterContract } from '../types/Factory/Router'
+import { MetaStatus,  Router as RouterContract } from '../types/ERC20Forwarder/Router'
 import { Transfer, ERC20 as ERC20Contract } from '../types/templates/ERC20/ERC20'
 import { Transaction } from '../types/schema'
 import {
