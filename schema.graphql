@@ -142,10 +142,6 @@ type Transaction @entity {
   originalUser: Bytes
   feeToken: Bytes # token address of gas token paid, if this was a meta txn
   feeAmount: BigDecimal # amount of gas token paid, if this was a meta txn
-
-  # mev calculation, if this was a swap
-  amount0UnusedSlippage: BigDecimal!
-  amount1UnusedSlippage: BigDecimal!
 }
 
 type Mint @entity {
