@@ -45,8 +45,7 @@ export function handleERC20Transfer(event: Transfer): void {
     transaction.swaps = []
   }
 
-  // record any fees paid to fee holder
-  if (event.params.to.toHexString() == routerContract.feeHolder().toHexString()) { // paid to feeHolder
+  if (event.params.to.equals(routerContract.feeHolder())) { // was sent to the fee holder
     transaction.feeToken = event.address
     const feeTokenContract = ERC20Contract.bind(event.address)
     transaction.feeAmount = convertTokenToDecimal(event.params.value, BigInt.fromI32(feeTokenContract.decimals()))
