@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import { BigInt, BigDecimal, store, Address } from '@graphprotocol/graph-ts'
 import {
-  ConveyorV2Pair,
+  Pair,
   Token,
   ConveyorV2Factory,
   Transaction,
@@ -45,7 +45,7 @@ export function handleTransfer(event: Transfer): void {
   createUser(to)
 
   // get pair and load contract
-  let pair = ConveyorV2Pair.load(event.address.toHexString())
+  let pair = Pair.load(event.address.toHexString())
   let pairContract = PairContract.bind(event.address)
 
   // liquidity token amount being transfered
@@ -211,7 +211,7 @@ export function handleTransfer(event: Transfer): void {
 }
 
 export function handleSync(event: Sync): void {
-  let pair = ConveyorV2Pair.load(event.address.toHex())
+  let pair = Pair.load(event.address.toHex())
   let token0 = Token.load(pair.token0)
   let token1 = Token.load(pair.token1)
   let xata = ConveyorV2Factory.load(FACTORY_ADDRESS)
@@ -280,7 +280,7 @@ export function handleMint(event: Mint): void {
   let mints = transaction.mints
   let mint = MintEvent.load(mints[mints.length - 1])
 
-  let pair = ConveyorV2Pair.load(event.address.toHex())
+  let pair = Pair.load(event.address.toHex())
   let xata = ConveyorV2Factory.load(FACTORY_ADDRESS)
 
   let token0 = Token.load(pair.token0)
@@ -341,7 +341,7 @@ export function handleBurn(event: Burn): void {
   let burns = transaction.burns
   let burn = BurnEvent.load(burns[burns.length - 1])
 
-  let pair = ConveyorV2Pair.load(event.address.toHex())
+  let pair = Pair.load(event.address.toHex())
   let xata = ConveyorV2Factory.load(FACTORY_ADDRESS)
 
   //update token info
@@ -393,7 +393,7 @@ export function handleBurn(event: Burn): void {
 }
 
 export function handleSwap(event: Swap): void {
-  let pair = ConveyorV2Pair.load(event.address.toHexString())
+  let pair = Pair.load(event.address.toHexString())
   let token0 = Token.load(pair.token0)
   let token1 = Token.load(pair.token1)
   let amount0In = convertTokenToDecimal(event.params.amount0In, token0.decimals)
@@ -416,7 +416,7 @@ export function handleSwap(event: Swap): void {
   let derivedAmountUSD = derivedAmountETH.times(bundle.ethPrice)
 
   // only accounts for volume through white listed tokens
-  let trackedAmountUSD = getTrackedVolumeUSD(amount0Total, token0 as Token, amount1Total, token1 as Token, pair as ConveyorV2Pair)
+  let trackedAmountUSD = getTrackedVolumeUSD(amount0Total, token0 as Token, amount1Total, token1 as Token, pair as Pair)
 
   let trackedAmountETH: BigDecimal
   if (bundle.ethPrice.equals(ZERO_BD)) {

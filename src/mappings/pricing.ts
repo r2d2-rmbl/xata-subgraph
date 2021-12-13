@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { ConveyorV2Pair, Token, Bundle } from '../types/schema'
+import { Pair, Token, Bundle } from '../types/schema'
 import { BigDecimal, Address, BigInt } from '@graphprotocol/graph-ts/index'
 import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD, UNTRACKED_PAIRS } from './helpers'
 
@@ -69,7 +69,7 @@ export function findEthPerToken(token: Token): BigDecimal {
     let pairAddressResult = factoryContract.try_getPair(Address.fromString(token.id), Address.fromString(WHITELIST[i]))
     if (!pairAddressResult.reverted && pairAddressResult.value.toHexString() != ADDRESS_ZERO) {
       const pairAddress = pairAddressResult.value;
-      let pair = ConveyorV2Pair.load(pairAddress.toHexString())
+      let pair = Pair.load(pairAddress.toHexString())
       if (pair.token0 == token.id && pair.reserveETH.gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)) {
         let token1 = Token.load(pair.token1)
         return pair.token1Price.times(token1.derivedETH as BigDecimal) // return token1 per our token * Eth per token 1
@@ -94,7 +94,7 @@ export function getTrackedVolumeUSD(
   token0: Token,
   tokenAmount1: BigDecimal,
   token1: Token,
-  pair: ConveyorV2Pair
+  pair: Pair
 ): BigDecimal {
   let bundle = Bundle.load('1')
   let price0 = token0.derivedETH.times(bundle.ethPrice)

@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import { log } from '@graphprotocol/graph-ts'
 import { PairCreated } from '../types/Factory/Factory'
-import { Bundle, ConveyorV2Pair, Token, ConveyorV2Factory } from '../types/schema'
+import { Bundle, Pair, Token, ConveyorV2Factory } from '../types/schema'
 import { ConveyorV2Pair as PairTemplate } from '../types/templates'
 import {
   FACTORY_ADDRESS,
@@ -84,7 +84,7 @@ export function handleNewPair(event: PairCreated): void {
     token1.txCount = ZERO_BI
   }
 
-  let pair = new ConveyorV2Pair(event.params.pair.toHexString()) as ConveyorV2Pair
+  let pair = new Pair(event.params.pair.toHexString()) as Pair
   pair.token0 = token0.id
   pair.token1 = token1.id
   pair.liquidityProviderCount = ZERO_BI

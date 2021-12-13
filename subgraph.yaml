@@ -17,7 +17,7 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/mappings/factory.ts
       entities:
-        - ConveyorV2Pair
+        - Pair
         - Token
       abis:
         - name: Factory
@@ -63,7 +63,7 @@ templates:
       language: wasm/assemblyscript
       file: ./src/mappings/core.ts
       entities:
-        - ConveyorV2Pair
+        - Pair
         - Token
       abis:
         - name: ConveyorV2Pair

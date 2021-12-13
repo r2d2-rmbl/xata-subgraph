@@ -50,11 +50,11 @@ type Token @entity {
   tokenDayData: [TokenDayData!]! @derivedFrom(field: "token")
   pairDayDataBase: [PairDayData!]! @derivedFrom(field: "token0")
   pairDayDataQuote: [PairDayData!]! @derivedFrom(field: "token1")
-  pairBase: [ConveyorV2Pair!]! @derivedFrom(field: "token0")
-  pairQuote: [ConveyorV2Pair!]! @derivedFrom(field: "token1")
+  pairBase: [Pair!]! @derivedFrom(field: "token0")
+  pairQuote: [Pair!]! @derivedFrom(field: "token1")
 }
 
-type ConveyorV2Pair @entity {
+type Pair @entity {
   # pair address
   id: ID!
 
@@ -106,7 +106,7 @@ type User @entity {
 type LiquidityPosition @entity {
   id: ID!
   user: User!
-  pair: ConveyorV2Pair!
+  pair: Pair!
   liquidityTokenBalance: BigDecimal!
 }
 
@@ -117,7 +117,7 @@ type LiquidityPositionSnapshot @entity {
   timestamp: Int! # saved for fast historical lookups
   block: Int! # saved for fast historical lookups
   user: User! # reference to user
-  pair: ConveyorV2Pair! # reference to pair
+  pair: Pair! # reference to pair
   token0PriceUSD: BigDecimal! # snapshot of token0 price
   token1PriceUSD: BigDecimal! # snapshot of token1 price
   reserve0: BigDecimal! # snapshot of pair token0 reserves
@@ -147,7 +147,7 @@ type Mint @entity {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
-  pair: ConveyorV2Pair!
+  pair: Pair!
 
   # populated from the primary Transfer event
   to: Bytes!
@@ -171,7 +171,7 @@ type Burn @entity {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
-  pair: ConveyorV2Pair!
+  pair: Pair!
 
   # populated from the primary Transfer event
   liquidity: BigDecimal!
@@ -198,7 +198,7 @@ type Swap @entity {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
-  pair: ConveyorV2Pair!
+  pair: Pair!
 
   # populated from the Swap event
   sender: Bytes!
@@ -240,7 +240,7 @@ type XATADayData @entity {
 type PairHourData @entity {
   id: ID!
   hourStartUnix: Int! # unix timestamp for start of hour
-  pair: ConveyorV2Pair!
+  pair: Pair!
 
   # reserves
   reserve0: BigDecimal!

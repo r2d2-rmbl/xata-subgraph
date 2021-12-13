@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import { BigDecimal, BigInt, EthereumEvent } from '@graphprotocol/graph-ts'
-import { Bundle, ConveyorV2Pair, PairDayData, Token, TokenDayData, XATADayData, ConveyorV2Factory } from '../types/schema'
+import { Bundle, Pair, PairDayData, Token, TokenDayData, XATADayData, ConveyorV2Factory } from '../types/schema'
 import { PairHourData } from './../types/schema'
 import { FACTORY_ADDRESS, ONE_BI, ZERO_BD, ZERO_BI } from './helpers'
 
@@ -36,7 +36,7 @@ export function updatePairDayData(event: EthereumEvent): PairDayData {
     .toHexString()
     .concat('-')
     .concat(BigInt.fromI32(dayID).toString())
-  let pair = ConveyorV2Pair.load(event.address.toHexString())
+  let pair = Pair.load(event.address.toHexString())
   let pairDayData = PairDayData.load(dayPairID)
   if (pairDayData === null) {
     pairDayData = new PairDayData(dayPairID)
@@ -68,7 +68,7 @@ export function updatePairHourData(event: EthereumEvent): PairHourData {
     .toHexString()
     .concat('-')
     .concat(BigInt.fromI32(hourIndex).toString())
-  let pair = ConveyorV2Pair.load(event.address.toHexString())
+  let pair = Pair.load(event.address.toHexString())
   let pairHourData = PairHourData.load(hourPairID)
   if (pairHourData === null) {
     pairHourData = new PairHourData(hourPairID)
