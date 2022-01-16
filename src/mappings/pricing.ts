@@ -10,7 +10,7 @@ const DAI_WETH_PAIR = '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11' // created bl
 const USDT_WETH_PAIR = '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852' // created block 10093341
 */
 
-const WETH_ADDRESS = '0x55d398326f99059ff775485246999027b3197955' // TODO: for now, we will assume ETH price = USDT price
+const WETH_ADDRESS = '0xc2132d05d31c914a87c6611c10748aeb04b58e8f' // TODO: for now, we will assume ETH price = USDT price
 
 export function getEthPriceInUSD(): BigDecimal {
   return BigDecimal.fromString("1") // for now, we will assume ETH price = USDT price
@@ -47,7 +47,7 @@ export function getEthPriceInUSD(): BigDecimal {
 
 // token where amounts should contribute to tracked volume and liquidity
 let WHITELIST: string[] = [
-  '0x55d398326f99059ff775485246999027b3197955', // USDT
+  '0xc2132d05d31c914a87c6611c10748aeb04b58e8f', // USDT
 ]
 
 // minimum liquidity required to count towards tracked volume for pairs with small # of Lps
